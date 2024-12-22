@@ -55,6 +55,11 @@ const routes = [
         component: './Assessment',
       },
       {
+        name: 'News',
+        path: '/newscast',
+        component: './Newscast',
+      },
+      {
         name: 'User Manual',
         path: 'http://47.106.95.15/pdf/KQuant.pdf',
         target: '_blank',
