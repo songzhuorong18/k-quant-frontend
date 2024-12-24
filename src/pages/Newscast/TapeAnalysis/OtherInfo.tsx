@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as echarts from 'echarts';
 import { Radio, Card } from 'antd';
+import type { RadioChangeEvent } from 'antd';
 
 const OtherInfo: React.FC = () => {
     const divRef = useRef(null);
@@ -68,13 +69,20 @@ const OtherInfo: React.FC = () => {
         ]
     };
 
+    const [value, setValue] = useState('1');
+
+    const onChange = (e: RadioChangeEvent) => {
+        console.log('radio checked', e.target.value);
+        setValue(e.target.value);
+      };
+
     useEffect(() => {
         const myChart = echarts.init(divRef.current);
         myChart.setOption(option);
     }, []);
 
     return <div style={{ width: '100%', background: '#f5f5f5', padding: '24px 0' }}>
-        <Radio.Group options={tabs} optionType="button" style={{ padding: '0 24px' }} />
+        <Radio.Group options={tabs} optionType="button" style={{ padding: '0 24px' }} onChange={onChange} value={value} />
         <div ref={divRef} style={{ height: '300px', width: '100%' }}></div>
         <Card style={{ margin: '0 24px', paddingBottom: '20px ' }}>
             <div>成交古比来看，大盘股占优。沪深300、中证500、中证2000与科创50成交占比均下降，中证2000成大百比有開上升。</div>

@@ -41,7 +41,7 @@ const plainOptions = Object.keys(modules).map(key => ({
   ...modules[key]
 }))
 
-const defaultCheckedList = ['Apple', 'Orange'];
+const defaultCheckedList = ['hot'];
 
 
 const News: React.FC = () => {
@@ -99,13 +99,14 @@ const News: React.FC = () => {
       </div>
       <Card
         className='card-title'
-        title={<div>热点追击<span className='card-desc'>为您提供自动化的每日重要新闻筛选</span></div>}
+        title={<div>{modules.hot.label}<span className='card-desc'>{modules.hot.desc}</span></div>}
+        extra={<Button type="link">导出热点追击</Button>}
       >
         <HotNews />
       </Card>
       <Card
         className='card-title'
-        title={<div>大盘分析<span className='card-desc'>把握市场整体脉络</span></div>}
+        title={<div>{modules.tape.label}<span className='card-desc'>{modules.tape.desc}</span></div>}
       >
         <Flex justify="space-between" align="stretch" gap={12} >
           <RiseAndFall />
@@ -115,19 +116,19 @@ const News: React.FC = () => {
       </Card>
       <Card
         className='card-title'
-        title={<div>热门股票及板块分析<span className='card-desc'>跟踪热门股票和资金流动</span></div>}
+        title={<div>{modules.stocks.label}<span className='card-desc'>{modules.stocks.desc}</span></div>}
       >
         <PopularStocks />
       </Card>
       <Card
         className='card-title'
-        title={<div>A股小结<span className='card-desc'>关注每日A股趋势</span></div>}
+        title={<div>{modules.AShare.label}<span className='card-desc'>{modules.AShare.desc}</span></div>}
       >
         <AShare />
       </Card>
       <Card
         className='card-title'
-        title={<div>美股小结<span className='card-desc'>掌握国际金融动向</span></div>}
+        title={<div>{modules.USStock.label}<span className='card-desc'>{modules.USStock.desc}</span></div>}
       >
 
       </Card>

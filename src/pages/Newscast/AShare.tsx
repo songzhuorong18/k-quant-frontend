@@ -1,6 +1,6 @@
 import React from 'react';
 import type { FormProps } from 'antd';
-import { Button, Select, Form, Card, Flex } from 'antd';
+import { Button, Select, Form, Space, Flex, Divider } from 'antd';
 import type { SelectProps } from 'antd';
 
 type FieldType = {
@@ -29,7 +29,7 @@ for (let i = 10; i < 36; i++) {
 
 const AShares: React.FC = () => {
   return <Flex justify="space-between" align="stretch" gap={12}>
-    <div style={{ width: '100%', background: '#f5f5f5', padding: '24px' }}>
+    <div style={{ width: '100%', background: '#f5f5f5', padding: '12px 24px' }}>
       <Form
         style={{ maxWidth: 600 }}
         onFinish={onFinish}
@@ -38,7 +38,7 @@ const AShares: React.FC = () => {
       >
         <Flex gap={12}>
           <div style={{ flex: 1 }}>
-            <span>板块</span>
+            <span style={{ lineHeight: '30px', fontWeight: 500 }}>板块</span>
             <Form.Item<FieldType>
               label="领涨"
               name="username"
@@ -51,6 +51,14 @@ const AShares: React.FC = () => {
                 style={{ width: '100%' }}
                 placeholder="请选择"
                 options={options}
+                optionRender={(option) => (
+                  <Space>
+                    <span>
+                      {option.data.label}
+                    </span>
+                    热门
+                  </Space>
+                )}
               />
             </Form.Item>
             <Form.Item<FieldType>
@@ -68,8 +76,9 @@ const AShares: React.FC = () => {
               />
             </Form.Item>
           </div>
+          <Divider type="vertical" dashed style={{ height: 'auto' }} />
           <div style={{ flex: 1 }}>
-            <span>概念</span>
+            <span style={{ lineHeight: '30px', fontWeight: 500 }}>概念</span>
             <Form.Item<FieldType>
               label="领涨"
               name="username"
