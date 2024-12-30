@@ -1,7 +1,7 @@
 import { request } from '@umijs/max';
 
 export async function queryNewsMap() {
-  return request('/api/v1/queryNewsMap', {
+  return request('/get_lianban_test', {
     method: 'GET'
   });
 }
