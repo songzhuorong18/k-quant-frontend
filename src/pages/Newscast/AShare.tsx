@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import type { FormProps } from 'antd';
 import { Button, Select, Form, Space, Flex, Divider } from 'antd';
 import type { SelectProps } from 'antd';
 
 type FieldType = {
-  username?: string;
-  password?: string;
-  remember?: string;
+  increaseIndustry?: string;
+  declineIndustry?: string;
+  increaseConcept?: string;
+  declineConcept?: string;
 };
+
+
 
 const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
   console.log('Success:', values);
@@ -28,25 +31,36 @@ for (let i = 10; i < 36; i++) {
 }
 
 const AShares: React.FC = () => {
+  const [form] = Form.useForm();
+
+  const [disabled, setDisabled] = useState(true);
+
+  function onValuesChange(changedValues: FieldType, allValues: FieldType) {
+    const hasIndustry = allValues.increaseIndustry?.length && allValues.declineIndustry?.length;
+    const hasConcept = allValues.increaseConcept?.length && allValues.declineConcept?.length;
+    setDisabled(!(hasIndustry || hasConcept))
+  }
+
   return <div>
     <div style={{ background: '#f5f5f5', marginBottom: '12px', padding: '8px 24px' }}>觀止至收盘，上证指数收跌3.06%，为3267.19；创业板指收跌3.99%，为2175.57；中证
-    500收跌 3.93%，为5750.25；</div>
+      500收跌 3.93%，为5750.25；</div>
     <Flex justify="space-between" align="stretch" gap={12} style={{ background: '#fff' }}>
       <div style={{ width: '100%', background: '#f5f5f5', padding: '0 24px' }}>
         <div style={{ fontSize: '16px', fontWeight: 500, padding: '8px 0' }}>TOP10 涨跌板块和概念</div>
         <Form
+          form={form}
           style={{ maxWidth: 600 }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
           autoComplete="off"
+          onValuesChange={onValuesChange}
         >
           <Flex gap={12}>
             <div style={{ flex: 1 }}>
               <span style={{ lineHeight: '30px', fontWeight: 500 }}>板块(行业)</span>
               <Form.Item<FieldType>
                 label="领涨"
-                name="username"
-              // rules={[{ required: true, message: 'Please input your username!' }]}
+                name="increaseIndustry"
               >
                 <Select
                   mode="multiple"
@@ -67,7 +81,7 @@ const AShares: React.FC = () => {
               </Form.Item>
               <Form.Item<FieldType>
                 label="领跌"
-                name="username"
+                name="declineIndustry"
               // rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Select
@@ -85,7 +99,7 @@ const AShares: React.FC = () => {
               <span style={{ lineHeight: '30px', fontWeight: 500 }}>概念</span>
               <Form.Item<FieldType>
                 label="领涨"
-                name="username"
+                name="increaseConcept"
               // rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Select
@@ -99,7 +113,7 @@ const AShares: React.FC = () => {
               </Form.Item>
               <Form.Item<FieldType>
                 label="领跌"
-                name="username"
+                name="declineConcept"
               // rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Select
@@ -114,11 +128,14 @@ const AShares: React.FC = () => {
             </div>
           </Flex>
 
-          <Form.Item label={null}>
-            <Button type="primary" htmlType="submit">
-              查询
-            </Button>
-          </Form.Item>
+          <Flex justify="flex-end">
+            <Form.Item label={null}>
+              <Button type="primary" htmlType="submit" disabled={disabled}>
+                生成市场分析报告
+              </Button>
+            </Form.Item>
+          </Flex>
+
         </Form>
       </div>
       <div style={{ width: '100%', background: '#f5f5f5', padding: '24px' }}>

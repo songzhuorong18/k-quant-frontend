@@ -60,6 +60,7 @@ const HotNews: React.FC = () => {
                 <p>选择新闻类别</p>
                 <Form
                     form={form}
+                    style={{ minWidth: 260 }}
                     name="dynamic_form_nest_item"
                     onFinish={onFinish}
                     autoComplete="off"
