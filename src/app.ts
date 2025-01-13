@@ -1,6 +1,7 @@
 import logo from '@/assets/UST.jpg';
 import 'animate.css';
 import './global.less';
+import { request } from './services/index';
 // 运行时配置
 
 // 全局初始化数据配置，用于 Layout 用户信息和权限初始化
@@ -32,3 +33,5 @@ export const layout = () => {
       routes[0].children.filter((item: any) => item.hideInMenu !== true),
   };
 };
+
+export { request };

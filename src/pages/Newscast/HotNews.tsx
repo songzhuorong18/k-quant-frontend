@@ -23,10 +23,12 @@ const HotNews: React.FC = () => {
 
     async function init() {
         const res = await queryNewsMap();
-        setNewsOptions(res.data || []);
-        const values = (res.data || []).map((item: any) => ({
-            sort: item.value,
-            count: 4,
+        console.log("🚀 ~ init ~ res:", res)
+        const newsMap = (res.data || []).map((value: string) => ({ value, label: value }))
+        setNewsOptions(newsMap);
+        const values = (newsMap).map((item: any) => ({
+            tag: item.value,
+            num: 4,
         }))
 
         form.setFieldsValue({
@@ -37,7 +39,7 @@ const HotNews: React.FC = () => {
 
     const onFinish = (values: any) => {
         console.log('Received values of form:', values);
-        getTodayNews(values)
+        getTodayNews(values.names)
     };
 
     useEffect(() => {
@@ -83,14 +85,14 @@ const HotNews: React.FC = () => {
                                     <Space key={key} style={{ display: 'flex' }} align="baseline">
                                         <Form.Item
                                             {...restField}
-                                            name={[name, 'sort']}
+                                            name={[name, 'tag']}
                                             rules={[{ required: true, message: '请选择新闻类别' }]}
                                         >
                                             <Select placeholder="新闻类别" style={{ width: '140px' }} options={newsOptions} />
                                         </Form.Item>
                                         <Form.Item
                                             {...restField}
-                                            name={[name, 'count']}
+                                            name={[name, 'num']}
                                             rules={[{ required: true, message: '请输入个数' }]}
                                         >
                                             <InputNumber placeholder="个数" min={1} max={10} />
@@ -103,7 +105,7 @@ const HotNews: React.FC = () => {
                                         <Button
                                             type="dashed"
                                             onClick={() => {
-                                                add({ sort: 'demo', count: 4 });
+                                                add({ tag: 'demo', num: 4 });
                                             }}
                                             icon={<PlusOutlined />}
                                         >

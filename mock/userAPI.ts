@@ -17,16 +17,16 @@ export default {
       errorCode: 0,
     });
   },
-  'GET /api/v1/queryNewsMap': (req: any, res: any) => {
-    res.json({
-      success: true,
-      errorCode: 0,
-      data: [
-        { value: 'news', label: '要闻' },
-        { value: 'finance', label: '金融' }
-      ]
-    });
-  },
+  // 'GET /api/v1/queryNewsMap': (req: any, res: any) => {
+  //   res.json({
+  //     success: true,
+  //     errorCode: 0,
+  //     data: [
+  //       { value: 'news', label: '要闻' },
+  //       { value: 'finance', label: '金融' }
+  //     ]
+  //   });
+  // },
   'GET /api/v1/queryTodayNews': (req: any, res: any) => {
     res.json({
       success: true,

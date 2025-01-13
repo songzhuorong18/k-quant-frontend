@@ -1,49 +1,86 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { FormProps } from 'antd';
-import { Button, Select, Form, Space, Flex, Divider } from 'antd';
+import { Button, Select, Form, Space, Flex, Divider, Spin } from 'antd';
 import type { SelectProps } from 'antd';
+import { queryAShareModules, queryAShareText } from '../../services/Newscast';
 
-type FieldType = {
-  increaseIndustry?: string;
-  declineIndustry?: string;
-  increaseConcept?: string;
-  declineConcept?: string;
+export type AShareFieldType = {
+  top_board?: string[];
+  bottom_board?: string[];
+  top_concepts?: string[];
+  bottom_concepts?: string[];
 };
 
 
-
-const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
+const onFinish: FormProps<AShareFieldType>['onFinish'] = (values) => {
   console.log('Success:', values);
+  queryAShareText(values)
 };
 
-const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
+const onFinishFailed: FormProps<AShareFieldType>['onFinishFailed'] = (errorInfo) => {
   console.log('Failed:', errorInfo);
 };
-
-// TODO 选项数据从哪里获取
-const options: SelectProps['options'] = [];
-
-for (let i = 10; i < 36; i++) {
-  options.push({
-    label: i.toString(36) + i,
-    value: i.toString(36) + i,
-  });
-}
 
 const AShares: React.FC = () => {
   const [form] = Form.useForm();
 
   const [disabled, setDisabled] = useState(true);
 
-  function onValuesChange(changedValues: FieldType, allValues: FieldType) {
-    const hasIndustry = allValues.increaseIndustry?.length && allValues.declineIndustry?.length;
-    const hasConcept = allValues.increaseConcept?.length && allValues.declineConcept?.length;
+  function onValuesChange(changedValues: AShareFieldType, allValues: AShareFieldType) {
+    const hasIndustry = allValues.top_board?.length && allValues.bottom_board?.length;
+    const hasConcept = allValues.top_concepts?.length && allValues.bottom_concepts?.length;
     setDisabled(!(hasIndustry || hasConcept))
   }
 
-  return <div>
-    <div style={{ background: '#f5f5f5', marginBottom: '12px', padding: '8px 24px' }}>觀止至收盘，上证指数收跌3.06%，为3267.19；创业板指收跌3.99%，为2175.57；中证
-      500收跌 3.93%，为5750.25；</div>
+  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState('');
+  const [options, setOptions] = useState({
+    top_board: [],
+    bottom_board: [],
+    top_concepts: [],
+    bottom_concepts: [],
+  });
+
+  async function getAShareModules() {
+    setLoading(true);
+    try {
+      const res = await queryAShareModules();
+      setText(res.data?.text1 || '');
+      const keys = ['top_board', 'bottom_board', 'top_concepts', 'bottom_concepts'];
+      let moduleOptions: any = {};
+      keys.forEach(moduleKey => {
+        const module = res.data[moduleKey];
+        const options = Object.keys(module).map(key => ({ label: key, value: key, percent: module[key] }));
+        moduleOptions[moduleKey] = options
+      })
+      setOptions(moduleOptions);
+    } catch (error) {
+
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
+  function optionRender(option: any) {
+    return (
+      <Space>
+        <span>
+          {option.data.label}
+        </span>
+        {option.data.percent}
+      </Space>
+    )
+  }
+
+
+
+  useEffect(() => {
+    getAShareModules();
+  }, [])
+
+  return <Spin spinning={loading}>
+    <div style={{ background: '#f5f5f5', marginBottom: '12px', padding: '8px 24px' }}>{text}</div>
     <Flex justify="space-between" align="stretch" gap={12} style={{ background: '#fff' }}>
       <div style={{ width: '100%', background: '#f5f5f5', padding: '0 24px' }}>
         <div style={{ fontSize: '16px', fontWeight: 500, padding: '8px 0' }}>TOP10 涨跌板块和概念</div>
@@ -60,7 +97,7 @@ const AShares: React.FC = () => {
               <span style={{ lineHeight: '30px', fontWeight: 500 }}>板块(行业)</span>
               <Form.Item<FieldType>
                 label="领涨"
-                name="increaseIndustry"
+                name="top_board"
               >
                 <Select
                   mode="multiple"
@@ -68,20 +105,13 @@ const AShares: React.FC = () => {
                   allowClear
                   style={{ width: '100%' }}
                   placeholder="请选择"
-                  options={options}
-                  optionRender={(option) => (
-                    <Space>
-                      <span>
-                        {option.data.label}
-                      </span>
-                      热门
-                    </Space>
-                  )}
+                  options={options.top_board}
+                  optionRender={optionRender}
                 />
               </Form.Item>
               <Form.Item<FieldType>
                 label="领跌"
-                name="declineIndustry"
+                name="bottom_board"
               // rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Select
@@ -90,7 +120,8 @@ const AShares: React.FC = () => {
                   allowClear
                   style={{ width: '100%' }}
                   placeholder="请选择"
-                  options={options}
+                  options={options.bottom_board}
+                  optionRender={optionRender}
                 />
               </Form.Item>
             </div>
@@ -99,7 +130,7 @@ const AShares: React.FC = () => {
               <span style={{ lineHeight: '30px', fontWeight: 500 }}>概念</span>
               <Form.Item<FieldType>
                 label="领涨"
-                name="increaseConcept"
+                name="top_concepts"
               // rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Select
@@ -108,12 +139,13 @@ const AShares: React.FC = () => {
                   allowClear
                   style={{ width: '100%' }}
                   placeholder="请选择"
-                  options={options}
+                  options={options.top_concepts}
+                  optionRender={optionRender}
                 />
               </Form.Item>
               <Form.Item<FieldType>
                 label="领跌"
-                name="declineConcept"
+                name="bottom_concepts"
               // rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Select
@@ -122,7 +154,8 @@ const AShares: React.FC = () => {
                   allowClear
                   style={{ width: '100%' }}
                   placeholder="请选择"
-                  options={options}
+                  options={options.bottom_concepts}
+                  optionRender={optionRender}
                 />
               </Form.Item>
             </div>
@@ -146,7 +179,7 @@ const AShares: React.FC = () => {
         概念方面，无概念上涨，科创次新股、BC电池、华为海思概念股、光刻机领跌。
       </div>
     </Flex>
-  </div>
+  </Spin>
 }
 
 export default AShares;
