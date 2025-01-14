@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as echarts from 'echarts';
 import { Radio, Card } from 'antd';
 import type { RadioChangeEvent } from 'antd';
+import { get_etf, get_zdzs, get_lrye, get_cje} from '../../../services/Newscast';
 
 const OtherInfo: React.FC = () => {
     const divRef = useRef(null);
@@ -76,9 +77,19 @@ const OtherInfo: React.FC = () => {
         setValue(e.target.value);
       };
 
+    async function getCJE(){
+        const res = await get_cje();
+        const myChart = echarts.init(divRef.current);
+        myChart.setOption(option);
+    }
+
     useEffect(() => {
         const myChart = echarts.init(divRef.current);
         myChart.setOption(option);
+        // get_cje();
+        // get_zdzs();
+        // get_etf();
+        // get_lrye();
     }, []);
 
     return <div style={{ width: '100%', background: '#f5f5f5', padding: '24px 0' }}>

@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as echarts from 'echarts';
 import { Card, Spin, Flex } from 'antd';
+import { get_zdzs } from '../../../services/Newscast';
 
 const RiseAndFall: React.FC = () => {
     const divRef = useRef(null);
@@ -9,26 +10,26 @@ const RiseAndFall: React.FC = () => {
         return [
             {
                 label: '上涨',
-                value: '122',
-                key: '1',
+                value: '',
+                key: 'up',
                 type: 'up',
             },
             {
                 label: '下跌',
-                value: '324',
-                key: '2',
+                value: '',
+                key: 'down',
                 type: 'down',
             },
             {
                 label: '涨停',
-                value: '32424',
-                key: '3',
+                value: '',
+                key: 'up_t',
                 type: 'up',
             },
             {
                 label: '跌停',
-                value: '2324',
-                key: '4',
+                value: '',
+                key: 'down_t',
                 type: 'down',
             },
         ];
@@ -36,52 +37,70 @@ const RiseAndFall: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [data, setData] = useState<any[]>(getDefaultValues())
 
-    const option = {
-        title: {
-            text: '涨跌分布',
-            left: 20,
-            top: 12,
-            textStyle: {
-                fontSize: 14
-            }
-        },
-        tooltip: {
-            trigger: 'axis'
-        },
-        xAxis: {
-            type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-            type: 'value'
-        },
-        series: [
-            {
-                data: [
-                    120,
-                    150,
-                    80,
-                    70,
-                    110,
-                    130,
-                    10
-                ],
-                type: 'bar',
-                itemStyle: {
-                    // 定义一个函数来根据横坐标的索引返回不同的颜色
-                    color: function (params: any) {
-                        // 这里可以根据需要设置不同的颜色
-                        const colors = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622'];
-                        return colors[params.dataIndex % colors.length];
+
+
+    function getOptions(xAxisData,seriesData) {
+        return {
+            title: {
+                text: '涨跌分布',
+                left: 20,
+                top: 12,
+                textStyle: {
+                    fontSize: 14
+                }
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            xAxis: {
+                type: 'category',
+                data: xAxisData
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    data: seriesData,
+                    type: 'bar',
+                    itemStyle: {
+                        // 定义一个函数来根据横坐标的索引返回不同的颜色
+                        color: function (params: any) {
+                            // 这里可以根据需要设置不同的颜色
+                            const colors = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622'];
+                            return colors[params.dataIndex % colors.length];
+                        }
                     }
                 }
-            }
-        ]
-    };
+            ]
+        };
+    }
+
+    async function getData() {
+        setLoading(true)
+        try {
+            const res = await get_zdzs();
+            console.log("🚀 ~ getData ~ res:", res.data[0])
+            const resData = res.data[0]?.highs_and_lows || {};
+            let options = getDefaultValues();
+            options.forEach(item => item.value = resData[item.key])
+            console.log("🚀 ~ getData ~ options:", options)
+            setData(options);
+            const xAxisData = Object.keys(resData.up_down);
+            console.log("🚀 ~ getData ~ xAxisData:", xAxisData)
+            const seriesData = Object.values(resData.up_down)
+            console.log("🚀 ~ getData ~ seriesData:", seriesData)
+            const myChart = echarts.init(divRef.current);
+            myChart.setOption(getOptions(xAxisData,seriesData));
+        } catch (error) {
+
+        } finally {
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
-        const myChart = echarts.init(divRef.current);
-        myChart.setOption(option);
+        getData()
     }, []);
 
     return <div style={{ width: '100%', background: '#f5f5f5', padding: '24px 0' }}>

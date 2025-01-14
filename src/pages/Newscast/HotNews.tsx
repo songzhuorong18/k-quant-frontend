@@ -14,7 +14,8 @@ const HotNews: React.FC = () => {
         setNewsLoading(true);
         try {
             const res = await queryTodayNews(params)
-            setNews(res.data?.list);
+            console.log("🚀 ~ getTodayNews ~ res:", res)
+            setNews(res.data);
         } finally {
             setNewsLoading(false)
         }
@@ -51,9 +52,8 @@ const HotNews: React.FC = () => {
             <div>
                 {
                     (news || []).map(item =>
-                        <li key={item.id}>
-                            <span>【{newsOptions.find(option => option.value === item.type).label}】</span>
-                            {item.title}
+                        <li key={item}>
+                            {item}
                         </li>
                     )
                 }

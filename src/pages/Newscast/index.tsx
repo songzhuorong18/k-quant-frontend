@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Flex, Button, Card, Modal, Checkbox } from 'antd';
 import BasicLayout from '../../layout/BasicLayout';
@@ -8,6 +8,7 @@ import RiseAndFall from './TapeAnalysis/RiseAndFall';
 import OtherInfo from './TapeAnalysis/OtherInfo';
 import PopularStocks from './PopularStocks';
 import AShare from './AShare';
+import { get_mgxj } from '../../services/Newscast';
 
 import type { CheckboxProps } from 'antd';
 
@@ -85,6 +86,18 @@ const News: React.FC = () => {
     setCheckedList(e.target.checked ? plainOptions.map(item => item.value) : []);
   };
 
+  const [mgxj, setMgxj] = useState('');
+
+  async function getUSStock() {
+    const res = await get_mgxj();
+    console.log("🚀 ~ getUSStock ~ res:", res)
+    setMgxj(res.data[0].America)
+  }
+
+  useEffect(() => {
+    getUSStock();
+  }, [])
+
   return (
     <BasicLayout backgroundColor="#f5f5f5">
       <div>
@@ -130,7 +143,7 @@ const News: React.FC = () => {
         className='card-title'
         title={<div>{modules.USStock.label}<span className='card-desc'>{modules.USStock.desc}</span></div>}
       >
-
+        {mgxj}
       </Card>
       <Modal title="导出" width={600} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
