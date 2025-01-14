@@ -54,7 +54,7 @@ const PopularStocks: React.FC = () => {
         <Flex justify="space-between" align="stretch" gap={12}>
             <div style={{ width: '100%', background: '#f5f5f5', padding: '24px' }}>
                 <div style={{ fontSize: '16px', fontWeight: 500, paddingBottom: '12px' }}>客观</div>
-                <Table<DataType> columns={columns} dataSource={data} bordered pagination={false} />
+                <Table columns={columns} dataSource={data} bordered pagination={false} />
             </div>
             <div style={{ width: '100%', background: '#f5f5f5', padding: '24px' }} >
                 <div style={{ fontSize: '16px', fontWeight: 500, paddingBottom: '12px' }}>主观</div>

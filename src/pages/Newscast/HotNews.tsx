@@ -29,7 +29,7 @@ const HotNews: React.FC = () => {
         const checked = newsMap.length > 3 ? newsMap.slice(0, 3) : newsMap;
         const values = (checked).map((item: any) => ({
             tag: item.value,
-            num: 4,
+            num: 3,
         }))
 
         form.setFieldsValue({

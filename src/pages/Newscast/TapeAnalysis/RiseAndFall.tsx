@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as echarts from 'echarts';
 import { Card, Spin, Flex } from 'antd';
-import { get_zdzs } from '../../../services/Newscast';
+import { get_zdfb } from '../../../services/Newscast';
 
 const RiseAndFall: React.FC = () => {
     const divRef = useRef(null);
@@ -79,7 +79,7 @@ const RiseAndFall: React.FC = () => {
     async function getData() {
         setLoading(true)
         try {
-            const res = await get_zdzs();
+            const res = await get_zdfb();
             console.log("🚀 ~ getData ~ res:", res.data[0])
             const resData = res.data[0]?.highs_and_lows || {};
             let options = getDefaultValues();
