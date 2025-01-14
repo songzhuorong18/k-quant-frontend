@@ -39,7 +39,7 @@ const RiseAndFall: React.FC = () => {
 
 
 
-    function getOptions(xAxisData,seriesData) {
+    function getOptions(xAxisData, seriesData) {
         return {
             title: {
                 text: '涨跌分布',
@@ -66,9 +66,7 @@ const RiseAndFall: React.FC = () => {
                     itemStyle: {
                         // 定义一个函数来根据横坐标的索引返回不同的颜色
                         color: function (params: any) {
-                            // 这里可以根据需要设置不同的颜色
-                            const colors = ['#c23531', '#2f4554', '#61a0a8', '#d48265', '#91c7ae', '#749f83', '#ca8622'];
-                            return colors[params.dataIndex % colors.length];
+                            return params.name.includes('-') ? '#01a047' : '#fe2637';
                         }
                     }
                 }
@@ -91,7 +89,7 @@ const RiseAndFall: React.FC = () => {
             const seriesData = Object.values(resData.up_down)
             console.log("🚀 ~ getData ~ seriesData:", seriesData)
             const myChart = echarts.init(divRef.current);
-            myChart.setOption(getOptions(xAxisData,seriesData));
+            myChart.setOption(getOptions(xAxisData, seriesData));
         } catch (error) {
 
         } finally {
