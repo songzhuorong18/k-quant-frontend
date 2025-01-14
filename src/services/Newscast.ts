@@ -9,12 +9,10 @@ export async function queryNewsMap() {
 }
 
 export async function queryTodayNews(params: any) {
-  console.log("🚀 ~ queryTodayNews ~ params:", params)
-  return request('/get_news', {
+  console.log('🚀 ~ queryTodayNews ~ params:', params);
+
+  return request(`/get_news?tag_list=${encodeURIComponent(params)}`, {
     method: 'GET',
-    params:{
-      tag_list: params,
-    }
   });
 }
 

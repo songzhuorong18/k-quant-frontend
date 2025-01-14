@@ -23,10 +23,10 @@ const HotNews: React.FC = () => {
 
     async function init() {
         const res = await queryNewsMap();
-        console.log("🚀 ~ init ~ res:", res)
         const newsMap = (res.data || []).map((value: string) => ({ value, label: value }))
         setNewsOptions(newsMap);
-        const values = (newsMap).map((item: any) => ({
+        const checked = newsMap.length > 3 ? newsMap.slice(0, 3) : newsMap;
+        const values = (checked).map((item: any) => ({
             tag: item.value,
             num: 4,
         }))
@@ -105,7 +105,7 @@ const HotNews: React.FC = () => {
                                         <Button
                                             type="dashed"
                                             onClick={() => {
-                                                add({ tag: 'demo', num: 4 });
+                                                add({ tag: '', num: 4 });
                                             }}
                                             icon={<PlusOutlined />}
                                         >

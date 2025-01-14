@@ -13,3 +13,4 @@
 .swc
 .DS_Store
 *.DS_Store
+/kquant-frontend
