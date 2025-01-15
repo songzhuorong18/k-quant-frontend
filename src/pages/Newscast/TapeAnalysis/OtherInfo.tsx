@@ -4,6 +4,7 @@ import { Radio, Card, Table } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import { get_etf, get_zdzs, get_lrye, get_cje } from '../../../services/Newscast';
 import type { TableProps } from 'antd';
+import { bottom } from '@popperjs/core';
 
 interface DataType {
     key: string;
@@ -13,6 +14,7 @@ interface DataType {
 
 const OtherInfo: React.FC = () => {
     const divRef = useRef(null);
+    const myChart = useRef(null);
 
     const tabs = [
         {
@@ -81,14 +83,20 @@ const OtherInfo: React.FC = () => {
         },
     ];
 
-    function getOptions(xAxisData, seriesData) {
+    function getOptions(xAxisData: string[], seriesData: any) {
         return {
+            grid: {
+              bottom: 80,
+            },
             tooltip: {
                 trigger: 'axis'
             },
             xAxis: {
                 type: 'category',
                 data: xAxisData,
+                axisLabel: {
+                    rotate: 90, // 将标签旋转90度
+                }
             },
             yAxis: {
                 type: 'value'
@@ -126,10 +134,30 @@ const OtherInfo: React.FC = () => {
         console.log("🚀 ~ getZDZS ~ res:", res)
         setZDZS(res.data[0].Ups_and_downs);
     }
+   
+    const lryeRef= useRef(null);
 
     async function getLRYE() {
         const res = await get_lrye();
+        const { balance, balance_df } = res.data[0];
+        setTurnOverCH(balance);
+        const dfData = JSON.parse(balance_df);
+        let xAxis: string[] = [];
+        let seriesData: string[] = [];
+        dfData.forEach((element: any) => {
+            xAxis.push(element.date);
+            seriesData.push(element.cn);
+        });
+        const series = [
+            {
+                type: 'line',
+                data: seriesData
+            }
+        ]
+        console.log('🚀 ~ getLRYE ~ dfData:', dfData);
         console.log("🚀 ~ getLRYE ~ res:", res);
+        const myChart = echarts.init(lryeRef.current);
+        myChart.setOption(getOptions(xAxis, series));
     }
 
     const [ETF, setETF] = useState([]);
@@ -166,15 +194,13 @@ const OtherInfo: React.FC = () => {
 
     return <div style={{ width: '100%', background: '#f5f5f5', padding: '24px 0' }}>
         <Radio.Group options={tabs} optionType="button" style={{ padding: '0 24px' }} onChange={onChange} value={value} />
-        {value === '1' && (
-            <div ref={divRef} style={{ height: '300px', width: '100%' }}></div>
-        )}
+        {value === '1' && <div ref={divRef} style={{ height: '300px', width: '100%' }}></div>}
+        {value === '3' && <div ref={lryeRef} style={{ height: '300px', width: '100%' }}></div>}
         {value === '2' && <Table style={{ padding: '0 24px', marginTop: '12px' }} columns={columns} dataSource={ZDZS} bordered pagination={false} />}
         {value === '4' && <Table style={{ padding: '0 24px', marginTop: '12px' }} columns={columnsETF} dataSource={ETF} bordered pagination={false} />}
         {turnOverCH && <Card style={{ margin: '12px 24px 0', paddingBottom: '20px ' }}>
-            <div>{turnOverCH}</div>
+            <div dangerouslySetInnerHTML={{ __html: turnOverCH }} ></div>
         </Card>}
-
     </div>
 
 };

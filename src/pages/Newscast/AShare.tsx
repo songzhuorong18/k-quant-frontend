@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import type { FormProps } from 'antd';
 import { Button, Select, Form, Space, Flex, Divider, Spin, Tooltip } from 'antd';
-import type { SelectProps } from 'antd';
 import { queryAShareModules, queryAShareText } from '../../services/Newscast';
+import Markdown from 'react-markdown';
 
 export type AShareFieldType = {
   selected_top_board?: string[];
@@ -66,12 +66,41 @@ const AShares: React.FC = () => {
 
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysis, setAnalysis] = useState('');
+  const [text2, setText2] = useState('');
+
+  // 创建一个函数来生成HTML字符串
+  function highlightText(text: string, redlist: string[], greenlist: string[]) {
+    // 创建正则表达式数组，用于替换
+    const redRegexps = redlist.map(word => new RegExp(`(${word})`, 'gi'));
+    const greenRegexps = greenlist.map(word => new RegExp(`(${word})`, 'gi'));
+
+    // 复制原始文本，防止直接修改
+    let highlightedText = text;
+
+    // 标红
+    redRegexps.forEach(regex => {
+      highlightedText = highlightedText.replace(regex, '<span style="color: red">$1</span>');
+    });
+
+    // 标绿
+    greenRegexps.forEach(regex => {
+      highlightedText = highlightedText.replace(regex, '<span style="color: green">$1</span>');
+    });
+
+    return highlightedText;
+  }
+
+
 
   async function getAnalysis(values: any) {
     setAnalysisLoading(true);
     try {
       const res = await queryAShareText(values)
-      setAnalysis(res.data[0]?.text || '');
+      const { text1 = '', text2 = '', red_list = [], green_list = [] } = res.data[0];
+      // 调用函数并获取生成的HTML字符串
+      const htmlString = highlightText(text1, red_list, green_list);
+      setAnalysis(htmlString || '');
+      setText2(text2);
     } catch (error) {
 
     } finally {
@@ -190,6 +219,7 @@ const AShares: React.FC = () => {
         analysis && (<div style={{ width: '100%', background: '#f5f5f5', padding: '24px' }}>
           <Spin spinning={analysisLoading} >
             <div dangerouslySetInnerHTML={{ __html: analysis }} ></div>
+            <Markdown>{text2}</Markdown>
           </Spin>
         </div>)
       }
