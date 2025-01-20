@@ -4,7 +4,6 @@ import { Radio, Card, Table } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import { get_etf, get_zdzs, get_lrye, get_cje } from '../../../services/Newscast';
 import type { TableProps } from 'antd';
-import { bottom } from '@popperjs/core';
 
 interface DataType {
     key: string;

@@ -21,5 +21,6 @@ export default defineConfig({
   // },
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
   history: { type: 'hash' },
-  outputPath: 'kquant-frontend'
+  outputPath: 'kquant-frontend',
+  esbuildMinifyIIFE: true,
 });
