@@ -83,10 +83,10 @@ const OtherInfo: React.FC = () => {
         },
     ];
 
-    function getOptions(xAxisData: string[], seriesData: any) {
+    function getOptions(xAxisData: string[], seriesData: any, yAxisConfig: any = {}) {
         return {
             grid: {
-              bottom: 80,
+                bottom: 80,
             },
             tooltip: {
                 trigger: 'axis'
@@ -99,7 +99,8 @@ const OtherInfo: React.FC = () => {
                 }
             },
             yAxis: {
-                type: 'value'
+                type: 'value',
+                ...yAxisConfig,
             },
             series: seriesData,
         };
@@ -134,8 +135,8 @@ const OtherInfo: React.FC = () => {
         console.log("🚀 ~ getZDZS ~ res:", res)
         setZDZS(res.data[0].Ups_and_downs);
     }
-   
-    const lryeRef= useRef(null);
+
+    const lryeRef = useRef(null);
 
     async function getLRYE() {
         const res = await get_lrye();
@@ -157,7 +158,16 @@ const OtherInfo: React.FC = () => {
         console.log('🚀 ~ getLRYE ~ dfData:', dfData);
         console.log("🚀 ~ getLRYE ~ res:", res);
         const myChart = echarts.init(lryeRef.current);
-        myChart.setOption(getOptions(xAxis, series));
+        myChart.setOption(getOptions(xAxis, series, {
+            min: function (value: any) {
+                console.log('🚀 ~ getLRYE ~ value:', value);
+                return Math.floor(value.min) - 100;
+            },
+            // 其他yAxis配置，如axisLabel等
+            axisLabel: {
+                formatter: '{value}亿'  // 可选：格式化标签，显示金额单位
+            }
+        }));
     }
 
     const [ETF, setETF] = useState([]);

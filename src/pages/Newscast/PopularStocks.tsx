@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Flex, Table, Spin } from 'antd';
 import type { TableProps } from 'antd';
 import { queryStocks } from '../../services/Newscast';
+import Markdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 
 interface DataType {
     key: string;
@@ -58,7 +60,8 @@ const PopularStocks: React.FC = () => {
             </div>
             <div style={{ width: '100%', background: '#f5f5f5', padding: '24px' }} >
                 <div style={{ fontSize: '16px', fontWeight: 500, paddingBottom: '12px' }}>主观</div>
-                <div dangerouslySetInnerHTML={{ __html: analysis }} ></div>
+                 <Markdown rehypePlugins={[rehypeRaw]}>{analysis}</Markdown>
+                {/* <div dangerouslySetInnerHTML={{ __html: analysis }} ></div> */}
             </div>
         </Flex>
     </Spin>

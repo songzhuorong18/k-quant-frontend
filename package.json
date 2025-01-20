@@ -34,6 +34,7 @@
     "react-slick": "^0.29.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-tsparticles": "^2.12.1",
+    "rehype-raw": "^7.0.0",
     "remark-gfm": "^3.0.1",
     "slick-carousel": "^1.8.1",
     "tsparticles-preset-big-circles": "^2.12.0",

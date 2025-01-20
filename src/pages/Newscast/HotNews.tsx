@@ -48,7 +48,7 @@ const HotNews: React.FC = () => {
     }, []);
 
     return <Spin tip="Loading" size="small" spinning={newsLoading}>
-        <Flex justify="space-between" align="flex-start" gap={12}>
+        <Flex justify="space-between" align="flex-start" gap={12} style={{ maxHeight: 500, overflowY: 'auto' }}>
             <div>
                 {
                     (news || []).map(item =>
@@ -58,7 +58,7 @@ const HotNews: React.FC = () => {
                     )
                 }
             </div>
-            <Card>
+            <Card style={{position: 'sticky', top: 0 }}>
                 <p>选择新闻类别</p>
                 <Form
                     form={form}
